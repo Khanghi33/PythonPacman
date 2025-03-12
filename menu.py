@@ -1,4 +1,5 @@
 import pygame
+import config
 import random
 import pygame.freetype
 import sys
@@ -6,12 +7,12 @@ import sys
 # Khởi tạo pygame
 pygame.init()
 
-# Kích thước màn hình
-WIDTH, HEIGHT = 800, 600
+# Screen scaling
+WIDTH, HEIGHT = config.WIDTH, config.HEIGHT
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Pacman Menu")
 
-# Định nghĩa màu sắc
+# Define color
 YELLOW = (255, 204, 0)
 BLUE = (0, 0, 200)
 RED = (255, 0, 0)
@@ -22,7 +23,7 @@ COLOR_CYCLE = [RED, YELLOW, BLUE]  # Màu nhấp nháy
 
 COLORS = [YELLOW]  # Chỉ màu vàng cho option được chọn
 
-# Font chữ
+# Font
 font = pygame.freetype.SysFont("Arial Black", 120, bold=True, italic=True)
 menu_font = pygame.freetype.SysFont("Arial Black", 50, italic=True)
 sub_text_font = pygame.freetype.SysFont("Bauhaus 93", 50, italic=True)
@@ -31,7 +32,7 @@ selected = 0
 
 # Biến điều khiển nhấp nháy
 blink_timer = 0
-blink_delay = 1000  # Nhấp nháy cực kỳ chậm (1 giây)
+blink_delay = 1000  # time (1 giây)
 blink_index = 0
 
 def draw_text(text, x, y, text_color, border_color, background_color):
@@ -55,26 +56,26 @@ def draw_menu():
     global blink_timer, blink_index
     screen.fill(BLACK)
     
-    # Cập nhật màu nhấp nháy
+    # Update flicker screen
     if pygame.time.get_ticks() - blink_timer > blink_delay:
         blink_timer = pygame.time.get_ticks()
         blink_index = (blink_index + 1) % len(COLOR_CYCLE)
     
     blink_color = COLOR_CYCLE[blink_index]
     
-    # Vẽ chữ PAC-MAN
+    # Draw PAC-MAN
     text_color = YELLOW
     border_color = BLUE
     background_color = ORANGE
     draw_text("PAC-MAN", WIDTH // 2, 100, text_color, BLUE, background_color)
     
-    # Vẽ chữ 23CLC08-HCMUS với màu nhấp nháy cực chậm
+    # Draw 23CLC08-HCMUS
     sub_text = "23CLC08-HCMUS"
     sub_text_surface, sub_text_rect = sub_text_font.render(sub_text, blink_color)
     sub_text_rect.center = (WIDTH // 2, 220)
     screen.blit(sub_text_surface, sub_text_rect)
     
-    # Vẽ menu
+    # Draw menu
     for i, text in enumerate(options):
         color = COLORS[0] if i == selected else WHITE
         glow_color = COLORS[0] if i == selected else BLACK

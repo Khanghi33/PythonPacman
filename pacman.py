@@ -1,10 +1,11 @@
 import math
 import copy
+import config
 
 # Scale
-X = 612
-dI = X // 34
-dJ = X // 32
+X = config.X
+dI = config.dI
+dJ = config.dJ
 
 # Map
 from board import boards
@@ -21,11 +22,10 @@ class Pacman():
     def __init__(self):
         self.direction = 0
         self.turns_allowed = [False, False, False, False]
+        self.eat_ghost = False
         self.player_speed = 2
         self.idx_x = 14
         self.idx_y = 30
-        dI = X // 34
-        dJ = X // 32
         self.px_x = 14 * X // 34 + dJ - X // 100
         self.px_y = 30 * X // 34 + dI - X // 100
     # Encapsulation
@@ -33,6 +33,9 @@ class Pacman():
     def get_px_y(self): return self.px_y
     def get_idx_x(self): return self.idx_x
     def get_idx_y(self): return self.idx_y
+    def get_direction(self): return self.direction
+    def can_eat_ghost(self): self.eat_ghost = True
+    def cannot_eat_ghost(self): self.eat_ghost = False
 
     def index_to_px(self):
         px_x = self.idx_x * X // 34 + dJ - X // 100
