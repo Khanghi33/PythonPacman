@@ -26,8 +26,8 @@ class Pacman():
         self.player_speed = 2
         self.idx_x = 14
         self.idx_y = 30
-        self.px_x = 14 * X // 34 + dJ - X // 100
-        self.px_y = 30 * X // 34 + dI - X // 100
+        self.px_x = self.idx_x * X // 34 + dJ - X // 100
+        self.px_y = self.idx_y * X // 34 + dI - X // 100
     # Encapsulation
     def get_px_x(self): return self.px_x
     def get_px_y(self): return self.px_y
@@ -36,6 +36,11 @@ class Pacman():
     def get_direction(self): return self.direction
     def can_eat_ghost(self): self.eat_ghost = True
     def cannot_eat_ghost(self): self.eat_ghost = False
+
+    def back_to_original_position(self):
+        self.idx_x, self.idx_y = config.pacman_x, config.pacman_y
+        self.px_x = self.idx_x * X // 34 + dJ - X // 100
+        self.px_y = self.idx_y * X // 34 + dI - X // 100
 
     def index_to_px(self):
         px_x = self.idx_x * X // 34 + dJ - X // 100

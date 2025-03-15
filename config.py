@@ -33,9 +33,10 @@ blue_x, blue_y = 13, 16
 pink_x, pink_y = 16, 16
 orange_x, orange_y = 13, 14
 red_x, red_y = 16, 14
+pacman_x, pacman_y = 14, 30
 
 # Game value
-livers = 3
+lifes = 3
 game_over = False
 game_won = False
 

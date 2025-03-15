@@ -8,7 +8,10 @@ import sys
 pygame.init()
 
 # Screen scaling
+# WIDTH, HEIGHT = config.WIDTH, config.HEIGHT
 WIDTH, HEIGHT = config.WIDTH, config.HEIGHT
+Xscale = WIDTH / 800
+print(Xscale)
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Pacman Menu")
 
@@ -24,9 +27,9 @@ COLOR_CYCLE = [RED, YELLOW, BLUE]  # Màu nhấp nháy
 COLORS = [YELLOW]  # Chỉ màu vàng cho option được chọn
 
 # Font
-font = pygame.freetype.SysFont("Arial Black", 120, bold=True, italic=True)
-menu_font = pygame.freetype.SysFont("Arial Black", 50, italic=True)
-sub_text_font = pygame.freetype.SysFont("Bauhaus 93", 50, italic=True)
+font = pygame.freetype.SysFont("Arial Black", 120 * Xscale, bold=True, italic=True)
+menu_font = pygame.freetype.SysFont("Arial Black", 50 * Xscale, italic=True)
+sub_text_font = pygame.freetype.SysFont("Bauhaus 93", 50 * Xscale, italic=True)
 options = ["PLAY", "LEADERBOARD", "EXIT"]
 selected = 0
 
@@ -39,10 +42,10 @@ def draw_text(text, x, y, text_color, border_color, background_color):
     text_surface, text_rect = font.render(text, text_color)
     text_rect.center = (x, y)
     
-    background_rect = text_rect.inflate(80, 50)
+    background_rect = text_rect.inflate(80 * Xscale // 1, 50 * Xscale // 1)
     background_surface = pygame.Surface(background_rect.size, pygame.SRCALPHA)
-    pygame.draw.rect(background_surface, background_color, (0, 0, *background_rect.size), border_radius=20)
-    pygame.draw.rect(background_surface, BLUE, (0, 0, *background_rect.size), 10, border_radius=20)
+    pygame.draw.rect(background_surface, background_color, (0, 0, *background_rect.size), border_radius=(20))
+    pygame.draw.rect(background_surface, BLUE, (0, 0, *background_rect.size), 10, border_radius=(20))
     
     screen.blit(background_surface, background_rect.topleft)
     
@@ -67,12 +70,12 @@ def draw_menu():
     text_color = YELLOW
     border_color = BLUE
     background_color = ORANGE
-    draw_text("PAC-MAN", WIDTH // 2, 100, text_color, BLUE, background_color)
+    draw_text("PAC-MAN", WIDTH // 2, 100 * Xscale, text_color, BLUE, background_color)
     
     # Draw 23CLC08-HCMUS
     sub_text = "23CLC08-HCMUS"
     sub_text_surface, sub_text_rect = sub_text_font.render(sub_text, blink_color)
-    sub_text_rect.center = (WIDTH // 2, 220)
+    sub_text_rect.center = (WIDTH // 2, 220 * Xscale)
     screen.blit(sub_text_surface, sub_text_rect)
     
     # Draw menu
@@ -106,15 +109,15 @@ def main():
                 elif event.key == pygame.K_RETURN:
                     if selected == 0:
                         print("Starting Game...")
+                        running = False
                     elif selected == 1:
                         print("Opening Leaderboard...")
                     elif selected == 2:
                         running = False
-        
+                        pygame.quit()
+                        sys.exit()
         clock.tick(60)
     
-    pygame.quit()
-    sys.exit()
 
 if __name__ == "__main__":
     main()

@@ -65,7 +65,7 @@ player_speed = config.player_speed
 turns_allowed = config.turn_allowed
 
 startup_counter = config.startup_counter
-lives = config.livers  
+ 
 game_over = config.game_over
 game_won = config.game_won
 
@@ -125,10 +125,13 @@ def get_score(idx_x, idx_y):
         powerup = True
         level[idx_y][idx_x] = 0
 
+def pacman_being_catch(idx_x, idx_y):
+    global life
+print("❤️")
+# menu.main()
 run = True
 while run:
     timer.tick(fps)
-    # menu.main()
     if counter < 19:
         counter += 1
         if counter > 3:
@@ -148,6 +151,10 @@ while run:
         startup_counter += 1
     else:
         moving = True
+    if config.lifes == 0:
+        game_over = True
+        run = False
+    
 
     # Screen
     screen.fill('black')
@@ -158,6 +165,12 @@ while run:
     score_rect.topleft = (0, 0)
     screen.blit(score_board, score_rect)
     get_score(pacman.idx_x, pacman.idx_y)
+
+    #Update Lifes
+    lifes_board = font.render(f"❤Life: {config.lifes}", True, 'white')
+    lifes_rect = lifes_board.get_rect()
+    lifes_rect.topleft = (X - 100, 0)
+    screen.blit(lifes_board, lifes_rect)
 
     # Draw Map
     draw_board()
@@ -195,9 +208,18 @@ while run:
             if Ghosts_list[i].get_idx_x() == start_index_ghosts[i][0] and Ghosts_list[i].get_idx_y() == start_index_ghosts[i][1]:
                 Ghosts_list[i].make_revive()
 
-            if powerup and pacman.get_idx_x() == Ghosts_list[i].get_idx_x() and pacman.get_idx_y() == Ghosts_list[i].get_idx_y() and not Ghosts_list[i].is_eaten():
-                Ghosts_list[i].make_dead()
-                score += (0.1 * (600 - power_counter)) // 1
+            if pacman.get_idx_x() == Ghosts_list[i].get_idx_x() and pacman.get_idx_y() == Ghosts_list[i].get_idx_y() and not Ghosts_list[i].is_eaten():
+                if powerup:
+                    Ghosts_list[i].make_dead()
+                    score += (0.1 * (600 - power_counter)) // 1
+                else:
+                    config.lifes -= 1
+                    for i in range(0, 4):
+                        Ghosts_list[i].set_position(start_index_ghosts[i][0], start_index_ghosts[i][1])
+                    pacman.back_to_original_position()
+                    pygame.time.delay(2000)
+            
+            
 
 
     # Get event from players
