@@ -1,7 +1,6 @@
 import math
 import config
 import heapq
-import random
 
 X = config.X
 dJ = config.dJ
@@ -10,29 +9,21 @@ dI = config.dI
 # Storing position of 4 ghost in the same time
 Ghosts_position = [[0, 0], [0, 0], [0, 0], [0, 0]]
 
-# def check_opposite_direction(prev_di , next_di):
-#     if prev_di == 1 and next_di == 0: return True
-#     elif prev_di == 0 and next_di == 1: return True
-#     elif prev_di == 2 and next_di == 3: return True
-#     elif prev_di == 3 and next_di == 2: return True
-#     return False
-
 dfs_visited = [()]
 def sort_manhattan_distance(ghost_x, ghost_y, pacman_x, pacman_y): 
     directions = [(1, 0), (-1, 0), (0, -1), (0, 1)]
     direction_values = [0, 1, 2, 3]  # Corresponding to direction constants
 
-    # Tính toán khoảng cách Manhattan cho từng hướng di chuyển
+    # Calculate Manhattan
     possible_moves = []
     for i, (dx, dy) in enumerate(directions):
         new_x, new_y = ghost_x + dx, ghost_y + dy
         distance = abs(new_x - pacman_x) + abs(new_y - pacman_y)
         possible_moves.append((distance, direction_values[i], (dx, dy)))
 
-    # Sắp xếp theo khoảng cách Manhattan giảm dần, nếu bằng nhau thì theo direction_values giảm dần
+    # Sort direction base on Manhattan
     possible_moves.sort(key=lambda x: (-x[0], -x[1]))
 
-    # Trả về danh sách direction_values và directions đã sắp xếp
     sorted_direction_values = [move[1] for move in possible_moves]
     sorted_directions = [move[2] for move in possible_moves]
     
@@ -78,7 +69,7 @@ class Ghost():
         self.direction = 0
         
         # Movement speed
-        self.speed = 1
+        self.speed = config.ghost_speed
 
         # Be eaten or not
         self.be_eaten = False
@@ -117,7 +108,7 @@ class Ghost():
 
     def make_revive(self):
         self.be_eaten = False
-        self.speed = 1.5
+        self.speed = config.ghost_speed
     
     def make_dead(self):
         self.be_eaten = True
@@ -184,11 +175,8 @@ class Ghost():
                 self.px_x = px_x
             
             # Update grid indices based on pixel position
-            # self.idx_x = math.ceil(((self.px_x - dJ + X // 100) * 34) / X)
-            # self.idx_y = math.ceil(((self.px_y - dI + X // 100) * 34) / X)
             self.update_index()
-            #self.idx_x = (self.px_x + (612 // 100)) // (612 // 34)
-            #self.idx_y = (self.px_y + (612 // 100)) // (612 // 34)
+
     
 
 class BlueGhost(Ghost):
@@ -240,14 +228,6 @@ class BlueGhost(Ghost):
 class PinkGhost(Ghost):
 
     global dfs_visited
-    # def is_stuck(self, board):
-    #     directions = [(1, 0), (-1, 0), (0, -1), (0, 1)]
-    #     direction_values = [0, 1, 2, 3]  # Corresponding to direction constants
-    #     for i, (dx, dy) in enumerate(directions):
-    #         if ((self.idx_x + dx, self.idx_y + dy) not in dfs_visited and
-    #             not self.is_wall(board[self.idx_y  + dy][self.idx_x + dx])):
-    #             return False
-    #     return True
     
     def handle_stuck(self, board):
         if (self.direction == 1 or self.direction == 0):
@@ -351,18 +331,9 @@ class PinkGhost(Ghost):
                 self.px_y += self.speed
                 self.px_x = px_x
             
-            # Update grid indices based on pixel position
-            # self.idx_x = math.ceil(((self.px_x - dJ + X // 100) * 34) / X)
-            # self.idx_y = math.ceil(((self.px_y - dI + X // 100) * 34) / X)
+            # Update index base on px
             self.update_index()
-            #self.idx_x = (self.px_x + (612 // 100)) // (612 // 34)
-            #self.idx_y = (self.px_y + (612 // 100)) // (612 // 34)
-            # print("Ghost: ", self.idx_x, self.idx_y)
-            # print("Ghost: ", ((self.px_x - dJ + X // 100) * 34) / X, ((self.px_y - dI + X // 100) * 34) / X)
-            # print("DFS_vistied: ", dfs_visited)
-            # Check stuck, if 4 position of ghost has been in global visited
-            # -> Clear global visited make it not stand in one place
-            # self.is_stuck(board)
+
             # Save global visited for dfs to prevent it from go again the same place
             if (self.idx_x, self.idx_y) not in dfs_visited:
                 if len(dfs_visited) < 5:
@@ -370,92 +341,11 @@ class PinkGhost(Ghost):
                 else:
                     dfs_visited.pop(0)
                     dfs_visited.append((self.idx_x, self.idx_y))
+
             # Check stuck, if 4 position of ghost has been in global visited
             # -> Clear global visited make it not stand in one place
             self.handle_stuck(board)
 
-
-    # DFS Backtracking
-    # def find_path(self, board, pacman_x, pacman_y):
-    #     """
-    #     Find the path to Pac-Man using DFS with backtracking.
-    #     Returns a list of directions to follow.
-    #     """
-    #     # Set to track visited positions
-    #     visited = set()
-    #     # Possible movement directions: right, left, up, down
-    #     directions = [(1, 0), (-1, 0), (0, -1), (0, 1)]
-    #     direction_values = [0, 1, 2, 3]  # Corresponding to direction constants
-        
-    #     def dfs(x, y, path):
-    #         # If reached Pac-Man, return the path
-    #         if x == pacman_x and y == pacman_y:
-    #             return path
-            
-    #         visited.add((x, y))
-            
-    #         for i, (dx, dy) in enumerate(directions):
-    #             new_x, new_y = x + dx, y + dy
-                
-    #             if (0 <= new_x < len(board[0]) and 
-    #                 0 <= new_y < len(board) and 
-    #                 not self.is_wall(board[new_y][new_x]) and
-    #                 not self.check_collusion_other_ghosts(Ghosts_position, new_x, new_y) and
-    #                 (new_x, new_y) not in visited):
-                    
-    #                 result = dfs(new_x, new_y, path + [direction_values[i]])
-    #                 if result:
-    #                     return result  # Stop as soon as we find a valid path
-                    
-    #         visited.remove((x, y))  # Backtrack if no path found from this position
-    #         return None
-        
-    #     # Start DFS from ghost's initial position
-    #     return dfs(self.idx_x, self.idx_y, []) or []
-    
-    #IDS
-    # def find_path(self, board, pacman_x, pacman_y):
-    #     """
-    #     Find a path to Pac-Man using IDS algorithm
-    #     Returns a list of directions to follow
-    #     """
-    #     # Possible movement directions: right, left, up, down
-    #     directions = [(1, 0), (-1, 0), (0, -1), (0, 1)]
-    #     direction_values = [0, 1, 2, 3]  # Corresponding to direction constants
-        
-    #     def depth_limited_search(x, y, depth, path, visited):
-    #         if x == pacman_x and y == pacman_y:
-    #             return path
-            
-    #         if depth == 0:
-    #             return None
-            
-            
-    #         for i, (dx, dy) in enumerate(directions):
-    #             new_x, new_y = x + dx, y + dy
-                
-    #             if (0 <= new_x < len(board[0]) and 
-    #                 0 <= new_y < len(board) and 
-    #                 not self.is_wall(board[new_y][new_x]) and
-    #                 not self.check_collusion_other_ghosts(Ghosts_position, new_x, new_y) and
-    #                 (new_x, new_y) not in visited):
-                    
-    #                 new_path = path + [direction_values[i]]
-    #                 visited.add((new_x, new_y))
-    #                 result = depth_limited_search(new_x, new_y, depth - 1, new_path, visited)
-    #                 if result is not None:
-    #                     return result
-    #                 visited.remove((new_x, new_y))
-            
-    #         return None
-    #     depth = 200
-    #     while depth <= 200:
-    #         visited = set([(self.idx_x, self.idx_y)])
-    #         result = depth_limited_search(self.idx_x, self.idx_y, depth, [], visited)
-    #         if result is not None:
-    #             return result
-    #         depth += 1
-    #     return []
 
 class OrangeGhost(Ghost):
     # UCS

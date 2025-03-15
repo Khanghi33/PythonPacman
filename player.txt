@@ -1,0 +1,5 @@
+Khai,500
+Danh,200
+Kenz,1000
+Hoan,100
+Khang,793.0
