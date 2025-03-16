@@ -32,10 +32,10 @@ ghost_speed = 1
 turn_allowed = [False, False, False, False]
 
 # Initial index position of characters
-blue_x, blue_y = 16,16
-pink_x, pink_y = 16,16
-orange_x, orange_y = 16,16
-red_x, red_y = 16,16
+blue_x, blue_y = 13, 16
+pink_x, pink_y = 16, 16
+orange_x, orange_y = 13, 14
+red_x, red_y = 16, 14
 pacman_x, pacman_y = 14, 30
 
 # Game value
