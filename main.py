@@ -2,8 +2,8 @@
 import copy
 from board import boards
 from pacman import Pacman
+import ghost
 from ghost import Ghost, BlueGhost, OrangeGhost, PinkGhost, RedGhost
-
 import config
 import handle_file
 import pygame
@@ -49,6 +49,7 @@ Ghosts_list = [BlueGhost(0, start_index_ghosts[0][0], start_index_ghosts[0][1], 
                PinkGhost(1, start_index_ghosts[1][0], start_index_ghosts[1][1], char_size),
                OrangeGhost(2, start_index_ghosts[2][0], start_index_ghosts[2][1], char_size),
                RedGhost(3, start_index_ghosts[3][0], start_index_ghosts[3][1], char_size)]
+
 
 direction = config.direction
 
@@ -272,3 +273,7 @@ while app_run:
                 if direction_command == 3:
                     direction_command = pacman.get_direction()
         pygame.display.flip()
+print("Total runtime: ", ghost.total_run_time)
+print("Total peak memory: ", ghost.total_peak_memory)
+print("Total expanded nodes: ", ghost.expanded_nodes)
+print("Total algorithm called: ", ghost.count)

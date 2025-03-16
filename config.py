@@ -2,8 +2,8 @@ import math
 
 
 # Screen 
-WIDTH = 612
-HEIGHT = 612
+WIDTH = 850
+HEIGHT = 850
 X = WIDTH
 dI = HEIGHT // 34
 dJ = HEIGHT // 32
