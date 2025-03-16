@@ -1,4 +1,5 @@
 import pygame
+import math
 import config
 import handle_file
 
@@ -8,6 +9,7 @@ pygame.init()
 # Screen scale
 WIDTH = config.WIDTH
 HEIGHT = config.HEIGHT
+Xscale = WIDTH / 612
 screen = pygame.display.set_mode((WIDTH, WIDTH))
 pygame.display.set_caption("Leaderboard")
 
@@ -16,9 +18,9 @@ BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 
 # Font
-title_font = pygame.font.SysFont("arialblack", 70) 
-player_font = pygame.font.SysFont("arialblack", 25, bold=False, italic=False) 
-exit_font = pygame.font.SysFont("arialblack", 20)
+title_font = pygame.font.SysFont("arialblack", math.floor(70 * Xscale)) 
+player_font = pygame.font.SysFont("arialblack", math.floor(25 * Xscale) // 1, bold=False, italic=False) 
+exit_font = pygame.font.SysFont("arialblack", math.floor(20 * Xscale) // 1)
 
 def draw_leaderboard(ranked_data):
     screen.fill(BLACK)
@@ -35,10 +37,10 @@ def draw_leaderboard(ranked_data):
     screen.blit(title, (WIDTH // 2 - title.get_width() // 2, 20))
 
     # Divide 2 column
-    column1_x = rect_x + 50
-    column2_x = rect_x + rect_width // 2 + 50
+    column1_x = rect_x + 50 * Xscale
+    column2_x = rect_x + rect_width // 2 + 50 * Xscale
     y_start = WIDTH // 32 * 8
-    line_spacing = 40  # line spacing
+    line_spacing = 40 * Xscale  # line spacing
 
     # Draw list of players
     if (len(ranked_data) > 0):

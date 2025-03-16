@@ -11,7 +11,7 @@ pygame.init()
 
 # Screen scaling
 # WIDTH, HEIGHT = config.WIDTH, config.HEIGHT
-WIDTH, HEIGHT = config.WIDTH, config.HEIGHT
+WIDTH, HEIGHT = config.WIDTH, config.WIDTH
 Xscale = WIDTH / 800
 print(Xscale)
 screen = pygame.display.set_mode((WIDTH, WIDTH))
@@ -73,11 +73,11 @@ def enter_name():
         text_color = YELLOW
         border_color = BLUE
         background_color = ORANGE
-        draw_text("PAC-MAN", WIDTH // 2, 100 * Xscale, text_color, BLUE, background_color)
+        draw_text("PAC-MAN", WIDTH // 2, 80 * Xscale, text_color, BLUE, background_color)
 
         # Enter name
         text_surface = name_font.render("Enter Your Name:", True, YELLOW)
-        screen.blit(text_surface, (WIDTH // 2 - text_surface.get_width() // 2, HEIGHT // 2 - 40))
+        screen.blit(text_surface, (WIDTH // 2 - text_surface.get_width() // 2, HEIGHT // 2 - 40 * Xscale  * WIDTH / 612))
 
         # Rectangle of typing answrer
         input_box = pygame.Rect(WIDTH // 4, HEIGHT // 2, WIDTH // 2, HEIGHT // 20)
@@ -90,7 +90,7 @@ def enter_name():
         # Username already existed text
         warning_surface = name_font.render("Username has already existed!!", True, RED)
         if flag == True:
-            screen.blit(warning_surface, (WIDTH // 2 - warning_surface.get_width() // 2, HEIGHT // 2 + 50))
+            screen.blit(warning_surface, (WIDTH // 2 - warning_surface.get_width() // 2, HEIGHT // 2 + 50 * Xscale * WIDTH / 612))
 
         # Update screen
         pygame.display.update()
@@ -144,7 +144,7 @@ def draw_menu(type):
             glow_color = COLORS[0] if i == selected else BLACK
             
             label, _ = menu_font.render(text, color)
-            rect = label.get_rect(center=(WIDTH // 2, HEIGHT // 2 + i * 80))
+            rect = label.get_rect(center=(WIDTH // 2, HEIGHT // 2 + i * 80 * Xscale))
             pygame.draw.rect(screen, glow_color, rect.inflate(45, 25), 3, border_radius=15)
             screen.blit(label, rect)
     elif type == 2:
@@ -153,7 +153,7 @@ def draw_menu(type):
             glow_color = COLORS[0] if i == selected else BLACK
             
             label, _ = menu_font.render(text, color)
-            rect = label.get_rect(center=(WIDTH // 2, HEIGHT // 2 + i * 60 - 100))
+            rect = label.get_rect(center=(WIDTH // 2, HEIGHT // 2 + i * 60 * WIDTH / 612 - 100))
             pygame.draw.rect(screen, glow_color, rect.inflate(45, 25), 3, border_radius=15)
             screen.blit(label, rect)
     elif type == 3:
