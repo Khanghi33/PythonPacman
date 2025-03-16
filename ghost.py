@@ -1,11 +1,19 @@
 import math
 import config
 import heapq
+import time
+import tracemalloc
+import random
 
 X = config.X
 dJ = config.dJ
 dI = config.dI
 
+total_run_time = 0
+total_memory = 0
+total_peak_memory = 0
+count = 0
+expanded_nodes = 0
 # Storing position of 4 ghost in the same time
 Ghosts_position = [[0, 0], [0, 0], [0, 0], [0, 0]]
 
@@ -149,9 +157,24 @@ class Ghost():
         self.update_ghosts_position()
     
     def move(self, board, pacman_x, pacman_y):
+        # Start time trace
+        start_time = time.perf_counter()
+        # Start memory trace
+        tracemalloc.start()
         # Find the path to Pac-Man
         path = self.find_path(board, pacman_x, pacman_y)
-    
+        # Store traced time and memory
+        current, peak = tracemalloc.get_traced_memory()
+        tracemalloc.stop()
+        end_time = time.perf_counter() - start_time
+        global total_memory
+        global total_peak_memory
+        global total_run_time
+        global count
+        total_run_time += end_time
+        total_memory += current
+        total_peak_memory += peak
+        count += 1
         px_x, px_y = self.index_to_px()
 
         # If there's a path and at least one step to take
@@ -182,6 +205,9 @@ class Ghost():
 class BlueGhost(Ghost):
     # BFS
     def find_path(self, board, pacman_x, pacman_y):
+        
+
+
         """
         Find the shortest path to Pac-Man using BFS algorithm
         Returns a list of directions to follow
@@ -197,6 +223,8 @@ class BlueGhost(Ghost):
         
         while queue:
             x, y, path = queue.pop(0)
+            global expanded_nodes
+            expanded_nodes += 1 # Increse expanded node count
             
             # Check if we've reached Pac-Man
             if x == pacman_x and y == pacman_y:
@@ -221,6 +249,7 @@ class BlueGhost(Ghost):
                     new_path = path + [direction_values[i]]
                     queue.append((new_x, new_y, new_path))
                     visited.add((new_x, new_y))
+        
         
         # If no path is found (should not happen in a valid Pac-Man maze)
         return []
@@ -272,7 +301,9 @@ class PinkGhost(Ghost):
         while stack:
             x, y, path = stack.pop()
             visited.add((x, y))
-            
+            # Increase expanded node count
+            global expanded_nodes
+            expanded_nodes += 1
             # Check if we've reached Pac-Man
             if x == pacman_x and y == pacman_y:
                 return path
@@ -305,7 +336,25 @@ class PinkGhost(Ghost):
     
     def move(self, board, pacman_x, pacman_y):
         # Find the path to Pac-Man
+        # Start time trace
+        start_time = time.perf_counter()
+        # Start memory trace
+        tracemalloc.start()
+        # Find the path to Pac-Man
         path = self.find_path(board, pacman_x, pacman_y)
+        # Store traced time and memory
+        current, peak = tracemalloc.get_traced_memory()
+        tracemalloc.stop()
+        end_time = time.perf_counter() - start_time
+        global total_memory
+        global total_peak_memory
+        global total_run_time
+        global count
+        total_run_time += end_time
+        total_memory += current
+        total_peak_memory += peak
+        count += 1
+
         if not path:
                 dfs_visited.clear()
 
@@ -354,6 +403,7 @@ class OrangeGhost(Ghost):
         Find the shortest path to Pac-Man using UCS algorithm
         Returns a list of directions to follow
         """
+        
         # Priority queue for UCS, contains: (cost, x, y, path)
         pq = [(0, self.idx_x, self.idx_y, [])]
         # Keep track of visited cells with their cost
@@ -366,7 +416,9 @@ class OrangeGhost(Ghost):
         
         while pq:
             cost, x, y, path = heapq.heappop(pq)  # Expand the lowest-cost node
-            
+            # Increase expanded node count
+            global expanded_nodes
+            expanded_nodes += 1
             # Check if we've reached Pac-Man
             if x == pacman_x and y == pacman_y:
                 return path
@@ -401,6 +453,7 @@ class RedGhost(Ghost):
         Find the shortest path to Pac-Man using A* algorithm with Manhattan distance heuristic.
         Returns a list of directions to follow.
         """
+        
         # Priority queue for A*, contains: (f-cost, g-cost, x, y, path)
         pq = [(0, 0, self.idx_x, self.idx_y, [])]
         # Keep track of visited cells with their g-cost
@@ -417,7 +470,9 @@ class RedGhost(Ghost):
 
         while pq:
             _, g_cost, x, y, path = heapq.heappop(pq)  # Expand the lowest f-cost node
-
+            # Increase expanded node count
+            global expanded_nodes
+            expanded_nodes += 1
             # Check if we've reached Pac-Man
             if x == pacman_x and y == pacman_y:
                 return path
@@ -443,6 +498,6 @@ class RedGhost(Ghost):
                     if (new_x, new_y) not in visited or new_g_cost < visited[(new_x, new_y)]:
                         visited[(new_x, new_y)] = new_g_cost
                         heapq.heappush(pq, (f_cost, new_g_cost, new_x, new_y, path + [direction_values[i]]))
-
+        
         # If no path is found
         return []
